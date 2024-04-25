@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.opus.pro"
     }
   ],
   "security": [
@@ -19,29 +19,29 @@
     }
   ],
   "paths": {
-    "/plants": {
+    "/api/ExportableClip": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "description": "Returns all clips  from project",
         "parameters": [
           {
-            "name": "limit",
+            "name": "projectId",
             "in": "query",
-            "description": "The maximum number of results to return",
+            "description": "ID of project",
+            "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "ExportableClip response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/ExportableClip"
                   }
                 }
               }
@@ -58,15 +58,16 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/ClipProject": {
       "post": {
-        "description": "Creates a new plant in the store",
+        "description": "Create a new project",
         "requestBody": {
-          "description": "Plant to add to the store",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/ClipProjectPostRequestBody"
               }
             }
           },
@@ -74,50 +75,17 @@
         },
         "responses": {
           "200": {
-            "description": "plant response",
+            "description": "Project created",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "$ref": "#/components/schemas/ClipProjectPostResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+            "description": "Unexpected error",
             "content": {
               "application/json": {
                 "schema": {
@@ -132,41 +100,91 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
+      "ExportableClip": {
         "required": [
-          "name"
+          "id"
         ],
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
+          "id": {
+            "description": "The id of the project",
             "type": "string"
           },
-          "tag": {
-            "description": "Tag to specify the type",
+          "uriForPreview": {
+            "description": "URI of video for preview",
+            "type": "string"
+          },
+          "uriForExport": {
+            "description": "URI of video for download",
+            "type": "string"
+          },
+          "title": {
+            "description": "Title of the clip",
+            "type": "string"
+          },
+          "text": {
+            "description": "Caption of the clip",
+            "type": "string"
+          },
+          "score": {
+            "description": "Score of the clip",
+            "type": "number",
+            "format": "int32"
+          },
+          "createdAt": {
+            "description": "Date of creation",
             "type": "string"
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+      "ClipProjectPostRequestBody": {
+        "required": [
+          "videoUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "videoUrl": {
+            "description": "The video url of the project",
+            "type": "string"
           },
-          {
-            "required": [
-              "id"
-            ],
+          "conclusionActions": {
+            "description": "Actions when project is finished",
             "type": "object",
             "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
+              "type": {
+                "description": "Type of the action, eg. WEBHOOK",
+                "type": "string",
+                "enum": [
+                  "WEBHOOK"
+                ]
+              },
+              "url": {
+                "description": "The system will send a POST request to the specified URL",
+                "type": "string"
               }
             }
           }
-        ]
+        }
+      },
+      "ClipProjectPostResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The id of the project",
+            "type": "string"
+          },
+          "stage": {
+            "description": "The stage of the project,enum COMPLETE|STALLED|QUEUED",
+            "type": "string"
+          },
+          "error": {
+            "description": "The error message",
+            "type": "string"
+          }
+        }
       },
       "Error": {
         "required": [
