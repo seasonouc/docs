@@ -31,40 +31,25 @@
       "url": "api-reference"
     }
   ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "#"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "#"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "#"
-    }
-  ],
   "navigation": [
     {
-      "group": "API Documentation",
+      "group": "Start",
       "pages": [
-        "api-reference/introduction"
+        "document/introduction"
       ]
     },
     {
-      "group": "ClipProject",
+      "group": "Project",
       "pages": [
         "api-reference/project/get",
         "api-reference/project/create"
       ]
+    },
+    {
+      "group": "Clip",
+      "pages": [
+        "api-reference/clip/get"
+      ]
     }
-  ],
-  "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
-  }
+  ]
 }
