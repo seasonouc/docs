@@ -304,109 +304,12 @@
             "title": "ClipProject.id",
             "type": "string"
           },
-          "sourcePlatform": {
-            "$ref": "#/components/schemas/SourcePlatform",
-            "title": "ClipProject.sourcePlatform"
-          },
-          "sourceId": {
-            "title": "ClipProject.sourceId",
-            "type": "string"
-          },
-          "sourceInfo": {
-            "$ref": "#/components/schemas/ProjectSourceInfo",
-            "title": "ClipProject.sourceInfo",
-            "description": "polymorphic information about the source"
-          },
-          "orgId": {
-            "title": "ClipProject.orgId",
-            "description": "subject identifier of project owner",
-            "type": "string"
-          },
-          "userId": {
-            "title": "ClipProject.userId",
-            "type": "string"
-          },
-          "utm": {
-            "title": "ClipProject.utm",
-            "description": "tracking info\nnot to be exposed to the user",
-            "type": "string"
-          },
-          "productTier": {
-            "title": "ClipProject.productTier",
-            "type": "string"
-          },
-          "conclusionActions": {
-            "items": {
-              "$ref": "#/components/schemas/ConclusionAction",
-              "title": "ClipProject.conclusionActions.[]"
-            },
-            "title": "ClipProject.conclusionActions",
-            "description": "not to be returned to the users",
-            "type": "array"
-          },
           "stage": {
             "$ref": "#/components/schemas/ClipProjectStage",
             "title": "ClipProject.stage"
           },
           "error": {
             "title": "ClipProject.error",
-            "type": "string"
-          },
-          "stallCount": {
-            "title": "ClipProject.stallCount",
-            "description": "how many times have this project ever concluded and stalled",
-            "type": "number"
-          },
-          "storageSize": {
-            "title": "ClipProject.storageSize",
-            "description": "total size of the project",
-            "type": "number"
-          },
-          "storageStatus": {
-            "title": "ClipProject.storageStatus",
-            "type": "string"
-          },
-          "storageExpireAt": {
-            "title": "ClipProject.storageExpireAt",
-            "type": "string"
-          },
-          "ip": {
-            "title": "ClipProject.ip",
-            "type": "string"
-          },
-          "ipCountry": {
-            "title": "ClipProject.ipCountry",
-            "type": "string"
-          },
-          "cluster": {
-            "title": "ClipProject.cluster",
-            "description": "which cluster this project is/was running on; empty if no using cluster-ng system",
-            "type": "string"
-          },
-          "clusterJobId": {
-            "title": "ClipProject.clusterJobId",
-            "description": "the backend job that pending processing of this clip",
-            "type": "string"
-          },
-          "importPref": {
-            "$ref": "#/components/schemas/ImportPreference",
-            "title": "ClipProject.importPref",
-            "description": "key project detail for backend"
-          },
-          "curationPref": {
-            "$ref": "#/components/schemas/CurationPreference",
-            "title": "ClipProject.curationPref"
-          },
-          "renderPref": {
-            "$ref": "#/components/schemas/RenderPreference",
-            "title": "ClipProject.renderPref"
-          },
-          "createdAt": {
-            "title": "ClipProject.createdAt",
-            "type": "string"
-          },
-          "updatedAt": {
-            "title": "ClipProject.updatedAt",
             "type": "string"
           }
         },
