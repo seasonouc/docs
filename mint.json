@@ -45,8 +45,8 @@
     {
       "group": "Project",
       "pages": [
-        "api-reference/project/get",
-        "api-reference/project/create"
+        "api-reference/project/create",
+        "api-reference/project/get"
       ]
     },
     {
