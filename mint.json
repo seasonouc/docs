@@ -34,11 +34,16 @@
       "name": "API Reference V1",
       "url": "v1/api-reference",
       "version": "v1"
+    },
+    {
+      "name": "API Reference V2",
+      "url": "v2/api-reference",
+      "version": "v2"
     }
   ],
   "navigation": [
     {
-      "group": "Start",
+      "group": "Overview",
       "pages": [
         "document/introduction"
       ]
@@ -52,11 +57,26 @@
       "version": "v1"
     },
     {
+      "group": "Project",
+      "pages": [
+        "v2/api-reference/project/create",
+        "v2/api-reference/project/get"
+      ],
+      "version": "v2"
+    },
+    {
       "group": "Exportable Clip",
       "pages": [
         "v1/api-reference/exportable-clip/get"
       ],
       "version": "v1"
+    },
+    {
+      "group": "Exportable Clip",
+      "pages": [
+        "v2/api-reference/exportable-clip/query"
+      ],
+      "version": "v2"
     }
   ],
   "versions": ["v1", "v2"]

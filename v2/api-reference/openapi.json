@@ -1,0 +1,1143 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI Plant Store",
+    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "license": {
+      "name": "MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.opus.pro"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/exportable-clips": {
+      "get": {
+        "description": "Query all exportable clips for the target project.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "q value that needs to be considered for filter",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "findByProjectId",
+              "enum": ["findByProjectId"]
+            }
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ExportableClip response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExportableClip"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clip-projects": {
+      "post": {
+        "description": "Create a new project.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClipProjectPostRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Project created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClipProjectPostResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clip-projects/{projectId}": {
+      "get": {
+        "description": "Get the project by project id.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "description": "a project id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project Info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClipProject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ExportableClip": {
+        "required": [
+          "id",
+          "title",
+          "text",
+          "createdAt",
+          "updatedAt",
+          "durationMs"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The id of the project",
+            "type": "string"
+          },
+          "uriForPreview": {
+            "description": "URI of video for preview",
+            "type": "string"
+          },
+          "uriForExport": {
+            "description": "URI of video for download",
+            "type": "string"
+          },
+          "uriForAdobePr": {
+            "description": "URI of video for adobe xml file download",
+            "type": "string"
+          },
+          "title": {
+            "description": "Title of the clip",
+            "type": "string"
+          },
+          "text": {
+            "description": "Caption of the clip",
+            "type": "string"
+          },
+          "score": {
+            "description": "Score of the clip",
+            "type": "number",
+            "format": "int32"
+          },
+          "createdAt": {
+            "description": "Date of creation",
+            "type": "string"
+          },
+          "durationMs": {
+            "description": "Duration time of the clip",
+            "type": "number"
+          },
+          "reason": {
+            "description": "Reason to give the Score",
+            "type": "string"
+          },
+          "pending": {
+            "description": "Is this clip being processed",
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "description": "Date of update",
+            "type": "string"
+          }
+        }
+      },
+      "ClipProjectPostRequestBody": {
+        "required": [
+          "videoUrl",
+          "conclusionActions"
+        ],
+        "type": "object",
+        "properties": {
+          "videoUrl": {
+            "description": "The video url of the project",
+            "type": "string"
+          },
+          "conclusionActions": {
+            "type": "array",
+            "items": {
+              "description": "Actions when project is finished",
+              "$ref": "#/components/schemas/ConclusionAction",
+              "title": "ConclusionAction"
+            }
+          },
+          "curationPref":{
+            "description": "The preference config of creating",
+            "type": "object",
+            "properties": {
+              "topicKeywords": {
+                "description": "topic key words",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "clipDurations": {
+                "description": "the duration to clip, preferred result range in seconds e.g. [30, 60]",
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "range": {
+                "description": "the range to clip in original video",
+                "type": "object",
+                "properties": {
+                  "startSec": {
+                    "type": "number"
+                  },
+                  "endSec": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ClipProjectPostResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The id of the project",
+            "type": "string"
+          },
+          "stage": {
+            "description": "The stage of the project,enum COMPLETE|STALLED|QUEUED",
+            "type": "string"
+          },
+          "error": {
+            "description": "The error message",
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "required": [
+          "error",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ClipProject": {
+        "properties": {
+          "id": {
+            "title": "ClipProject.id",
+            "type": "string"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/ClipProjectStage",
+            "title": "ClipProject.stage"
+          },
+          "error": {
+            "title": "ClipProject.error",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "sourcePlatform",
+          "sourceId",
+          "orgId",
+          "userId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false,
+        "title": "ClipProject",
+        "description": "Describes a clipping project",
+        "type": "object"
+      },
+      "SourcePlatform": {
+        "enum": [
+          "YOUTUBE",
+          "UPLOADED",
+          "YTDLP_LINK",
+          "GDRIVE",
+          "ZOOM",
+          "STREAM_YARD"
+        ],
+        "title": "SourcePlatform",
+        "type": "string"
+      },
+      "ProjectSourceInfo": {
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/SourcePlatform",
+            "title": "ProjectSourceInfo.type"
+          },
+          "videoId": {
+            "title": "ProjectSourceInfo.videoId",
+            "type": "string"
+          },
+          "title": {
+            "title": "ProjectSourceInfo.title",
+            "type": "string"
+          },
+          "durationMs": {
+            "title": "ProjectSourceInfo.durationMs",
+            "type": "number"
+          },
+          "thumbnailUrl": {
+            "title": "ProjectSourceInfo.thumbnailUrl",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "videoId",
+          "title",
+          "durationMs"
+        ],
+        "additionalProperties": false,
+        "title": "ProjectSourceInfo",
+        "type": "object"
+      },
+      "ConclusionAction": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/ConclusionActionEmail",
+            "title": "ConclusionAction"
+          },
+          {
+            "$ref": "#/components/schemas/ConclusionActionWebhook",
+            "title": "ConclusionAction"
+          }
+        ],
+        "title": "ConclusionAction"
+      },
+      "ConclusionActionEmail": {
+        "properties": {
+          "type": {
+            "title": "ConclusionActionEmail.type",
+            "enum": [
+              "EMAIL"
+            ],
+            "type": "string"
+          },
+          "notifyFailure": {
+            "title": "ConclusionActionEmail.notifyFailure",
+            "type": "boolean"
+          },
+          "email": {
+            "title": "ConclusionActionEmail.email",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false,
+        "title": "ConclusionActionEmail",
+        "type": "object"
+      },
+      "ConclusionActionWebhook": {
+        "properties": {
+          "type": {
+            "title": "ConclusionActionWebhook.type",
+            "enum": [
+              "WEBHOOK"
+            ],
+            "type": "string"
+          },
+          "notifyFailure": {
+            "title": "ConclusionActionWebhook.notifyFailure",
+            "type": "boolean"
+          },
+          "url": {
+            "title": "ConclusionActionWebhook.url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "url"
+        ],
+        "additionalProperties": false,
+        "title": "ConclusionActionWebhook",
+        "type": "object"
+      },
+      "ClipProjectStage": {
+        "enum": [
+          "PENDING",
+          "QUEUED",
+          "IMPORT",
+          "CURATE",
+          "REFINE",
+          "RENDER",
+          "UPLOAD",
+          "COMPLETE",
+          "STALLED"
+        ],
+        "title": "ClipProjectStage",
+        "type": "string"
+      },
+      "RenderPreference": {
+        "properties": {
+          "enableAutoLayout": {
+            "title": "RenderPreference.enableAutoLayout",
+            "description": "layout settings",
+            "type": "boolean"
+          },
+          "enableScreenLayout": {
+            "title": "RenderPreference.enableScreenLayout",
+            "type": "boolean"
+          },
+          "enableFillLayout": {
+            "title": "RenderPreference.enableFillLayout",
+            "type": "boolean"
+          },
+          "enableSplitLayout": {
+            "title": "RenderPreference.enableSplitLayout",
+            "type": "boolean"
+          },
+          "enableThreeLayout": {
+            "title": "RenderPreference.enableThreeLayout",
+            "type": "boolean"
+          },
+          "enableFourLayout": {
+            "title": "RenderPreference.enableFourLayout",
+            "type": "boolean"
+          },
+          "enableFitLayout": {
+            "title": "RenderPreference.enableFitLayout",
+            "type": "boolean"
+          },
+          "fitLayoutCropRatio": {
+            "enum": [
+              "4:3",
+              "1:1",
+              ""
+            ],
+            "title": "RenderPreference.fitLayoutCropRatio",
+            "description": "crop ratio for fit layout\n- default: no crop, keep full content show\n- 4:3\n- 1:1",
+            "type": "string"
+          },
+          "enableVisualHook": {
+            "title": "RenderPreference.enableVisualHook",
+            "description": "overlays\n- Visual Hook\n- captions\n- emoji\n- B-Roll\n- screen overlays\n- watermark",
+            "type": "boolean"
+          },
+          "enableWatermark": {
+            "title": "RenderPreference.enableWatermark",
+            "description": "Free plan credits watermark, rendered after 3 seconds of playback",
+            "type": "boolean"
+          },
+          "watermarkType": {
+            "$ref": "#/components/schemas/WatermarkType",
+            "title": "RenderPreference.watermarkType"
+          },
+          "enableCrop": {
+            "title": "RenderPreference.enableCrop",
+            "description": "if user want re-layout; not using",
+            "type": "boolean"
+          },
+          "enableCaption": {
+            "title": "RenderPreference.enableCaption",
+            "type": "boolean"
+          },
+          "font": {
+            "properties": {
+              "id": {
+                "title": "RenderPreference.font.id",
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "CustomizedFont",
+                  "System"
+                ],
+                "title": "RenderPreference.font.type",
+                "type": "string"
+              },
+              "name": {
+                "title": "RenderPreference.font.name",
+                "type": "string"
+              },
+              "path": {
+                "title": "RenderPreference.font.path",
+                "type": "string"
+              },
+              "size": {
+                "enum": [
+                  "Large",
+                  "Middle",
+                  "Small"
+                ],
+                "title": "RenderPreference.font.size",
+                "type": "string"
+              },
+              "numericalSize": {
+                "title": "RenderPreference.font.numericalSize",
+                "type": "number"
+              },
+              "color": {
+                "title": "RenderPreference.font.color",
+                "type": "string"
+              },
+              "style": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "RenderPreference.font.style",
+                "type": "array"
+              },
+              "textDecoration": {
+                "enum": [
+                  "line-through",
+                  "underline",
+                  ""
+                ],
+                "title": "RenderPreference.font.textDecoration",
+                "type": "string"
+              },
+              "family": {
+                "title": "RenderPreference.font.family",
+                "type": "string"
+              },
+              "stroke": {
+                "properties": {
+                  "enabled": {
+                    "title": "RenderPreference.font.stroke.enabled",
+                    "type": "boolean"
+                  },
+                  "color": {
+                    "title": "RenderPreference.font.stroke.color",
+                    "type": "string"
+                  },
+                  "width": {
+                    "title": "RenderPreference.font.stroke.width",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "enabled",
+                  "color",
+                  "width"
+                ],
+                "additionalProperties": false,
+                "title": "RenderPreference.font.stroke",
+                "type": "object"
+              },
+              "shadow": {
+                "properties": {
+                  "enabled": {
+                    "title": "RenderPreference.font.shadow.enabled",
+                    "type": "boolean"
+                  },
+                  "color": {
+                    "title": "RenderPreference.font.shadow.color",
+                    "type": "string"
+                  },
+                  "x": {
+                    "title": "RenderPreference.font.shadow.x",
+                    "type": "number"
+                  },
+                  "y": {
+                    "title": "RenderPreference.font.shadow.y",
+                    "type": "number"
+                  },
+                  "blur": {
+                    "title": "RenderPreference.font.shadow.blur",
+                    "type": "number"
+                  },
+                  "useWordHighlightColor": {
+                    "title": "RenderPreference.font.shadow.useWordHighlightColor",
+                    "description": "use words' highlight color instead of shadow color",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "enabled",
+                  "color",
+                  "x",
+                  "y",
+                  "blur"
+                ],
+                "additionalProperties": false,
+                "title": "RenderPreference.font.shadow",
+                "type": "object"
+              }
+            },
+            "required": [
+              "color",
+              "style",
+              "textDecoration",
+              "family",
+              "stroke",
+              "shadow"
+            ],
+            "additionalProperties": false,
+            "title": "RenderPreference.font",
+            "type": "object"
+          },
+          "captionStyle": {
+            "enum": [
+              "one-line",
+              ""
+            ],
+            "title": "RenderPreference.captionStyle",
+            "type": "string"
+          },
+          "captionPosition": {
+            "enum": [
+              "auto",
+              "top",
+              "middle",
+              "bottom"
+            ],
+            "title": "RenderPreference.captionPosition",
+            "type": "string"
+          },
+          "enableCaptionAnimation": {
+            "title": "RenderPreference.enableCaptionAnimation",
+            "type": "boolean"
+          },
+          "captionAnimation": {
+            "properties": {
+              "name": {
+                "title": "RenderPreference.captionAnimation.name",
+                "description": "'' is for off"
+              },
+              "highlightColor": {
+                "title": "RenderPreference.captionAnimation.highlightColor",
+                "type": "string"
+              },
+              "bgColor": {
+                "title": "RenderPreference.captionAnimation.bgColor",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false,
+            "title": "RenderPreference.captionAnimation",
+            "type": "object"
+          },
+          "enableUppercase": {
+            "title": "RenderPreference.enableUppercase",
+            "description": "convert all char to uppercase",
+            "type": "boolean"
+          },
+          "enableHighlight": {
+            "title": "RenderPreference.enableHighlight",
+            "description": "highlighting for keywords",
+            "type": "boolean"
+          },
+          "highlightColor": {
+            "properties": {
+              "primary": {
+                "title": "RenderPreference.highlightColor.primary",
+                "type": "string"
+              },
+              "secondary": {
+                "title": "RenderPreference.highlightColor.secondary",
+                "type": "string"
+              }
+            },
+            "required": [
+              "primary",
+              "secondary"
+            ],
+            "additionalProperties": false,
+            "title": "RenderPreference.highlightColor",
+            "type": "object"
+          },
+          "enableEmoji": {
+            "title": "RenderPreference.enableEmoji",
+            "type": "boolean"
+          },
+          "emojiStyle": {
+            "properties": {
+              "pos": {
+                "title": "RenderPreference.emojiStyle.pos",
+                "type": "number"
+              },
+              "rect": {
+                "title": "RenderPreference.emojiStyle.rect",
+                "type": "object",
+                "properties": {
+                  "xPct": {
+                    "title": "RenderPreference.emojiStyle.rect.xPct",
+                    "type": "number"
+                  },
+                  "yPct": {
+                    "title": "RenderPreference.emojiStyle.rect.yPct",
+                    "type": "number"
+                  },
+                  "wPct": {
+                    "title": "RenderPreference.emojiStyle.rect.wPct",
+                    "type": "number"
+                  },
+                  "hPct": {
+                    "title": "RenderPreference.emojiStyle.rect.hPct",
+                    "type": "number"
+                  },
+                  "l": {
+                    "title": "RenderPreference.emojiStyle.rect.l",
+                    "type": "number"
+                  },
+                  "t": {
+                    "title": "RenderPreference.emojiStyle.rect.t",
+                    "type": "number"
+                  },
+                  "w": {
+                    "title": "RenderPreference.emojiStyle.rect.w",
+                    "type": "number"
+                  },
+                  "h": {
+                    "title": "RenderPreference.emojiStyle.rect.h",
+                    "type": "number"
+                  }
+                }
+              },
+              "scaleX": {
+                "title": "RenderPreference.emojiStyle.scaleX",
+                "type": "number"
+              },
+              "scaleY": {
+                "title": "RenderPreference.emojiStyle.scaleY",
+                "type": "number"
+              }
+            },
+            "additionalProperties": false,
+            "title": "RenderPreference.emojiStyle",
+            "type": "object"
+          },
+          "screenOverlays": {
+            "items": {
+              "properties": {
+                "object": {
+                  "$ref": "#/components/schemas/GCSObjectMeta",
+                  "title": "object"
+                },
+                "style": {
+                  "$ref": "#/components/schemas/CanvasStyle",
+                  "title": "style"
+                },
+                "rect": {
+                  "title": "rect"
+                }
+              },
+              "required": [
+                "object"
+              ],
+              "additionalProperties": false,
+              "type": "object"
+            },
+            "title": "RenderPreference.screenOverlays",
+            "type": "array"
+          },
+          "enableBroll": {
+            "title": "RenderPreference.enableBroll",
+            "type": "boolean"
+          },
+          "layoutAspectRatio": {
+            "$ref": "#/components/schemas/LayoutAspectRatioType",
+            "title": "RenderPreference.layoutAspectRatio",
+            "description": "layoutAspectRatio\n- portrait: 9:16 [default]\n- square: 1:1\n- landscape: 16:9"
+          },
+          "reduceFakeFace": {
+            "title": "RenderPreference.reduceFakeFace",
+            "description": "layout ab test",
+            "type": "boolean"
+          },
+          "refineTurboMode": {
+            "title": "RenderPreference.refineTurboMode",
+            "description": "Turbo Refine: reduce scene detect, reduce face detect, skip MovingSpeaker and ASD",
+            "type": "boolean"
+          },
+          "sceneDetThresh": {
+            "title": "RenderPreference.sceneDetThresh",
+            "description": "Scene Detect Threshold, bigger means less scenes",
+            "type": "number"
+          },
+          "renderSkipAdobe": {
+            "title": "RenderPreference.renderSkipAdobe",
+            "description": "Skip Adobe when render",
+            "type": "boolean"
+          },
+          "skipReframe": {
+            "title": "RenderPreference.skipReframe",
+            "description": "Skip reframe (for free-tool)",
+            "type": "boolean"
+          },
+          "disableScreenOverlay": {
+            "title": "RenderPreference.disableScreenOverlay",
+            "type": "boolean"
+          },
+          "disableFitLayout": {
+            "title": "RenderPreference.disableFitLayout",
+            "type": "boolean"
+          },
+          "disableFillLayout": {
+            "title": "RenderPreference.disableFillLayout",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enableAutoLayout",
+          "enableScreenLayout",
+          "enableFillLayout",
+          "enableSplitLayout",
+          "enableThreeLayout",
+          "enableFourLayout",
+          "enableFitLayout",
+          "fitLayoutCropRatio",
+          "enableVisualHook",
+          "enableWatermark",
+          "enableCrop",
+          "enableCaption",
+          "font",
+          "enableUppercase",
+          "enableHighlight",
+          "highlightColor",
+          "enableEmoji"
+        ],
+        "additionalProperties": false,
+        "title": "RenderPreference",
+        "type": "object"
+      },
+      "ImportPreference": {
+        "properties": {
+          "sourceLang": {
+            "title": "ImportPreference.sourceLang",
+            "description": "treat the original video as what language, empty means auto-detect",
+            "type": "string"
+          },
+          "targetLang": {
+            "title": "ImportPreference.targetLang",
+            "description": "translate the original video into what language, empty means don't translate",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "title": "ImportPreference",
+        "type": "object"
+      },
+      "CurationPreference": {
+        "properties": {
+          "range": {
+            "properties": {
+              "startSec": {
+                "title": "CurationPreference.range.startSec",
+                "type": "number"
+              },
+              "endSec": {
+                "title": "CurationPreference.range.endSec",
+                "type": "number"
+              }
+            },
+            "required": [
+              "startSec",
+              "endSec"
+            ],
+            "additionalProperties": false,
+            "title": "CurationPreference.range",
+            "description": "range of the video to be curated",
+            "type": "object"
+          },
+          "clipDurations": {
+            "items": {},
+            "title": "CurationPreference.clipDurations",
+            "type": "array"
+          },
+          "topicKeywords": {
+            "items": {
+              "title": "CurationPreference.topicKeywords.[]",
+              "type": "string"
+            },
+            "title": "CurationPreference.topicKeywords",
+            "type": "array"
+          },
+          "disableJudgeModel": {
+            "title": "CurationPreference.disableJudgeModel",
+            "type": "boolean"
+          },
+          "countScaler": {
+            "title": "CurationPreference.countScaler",
+            "type": "number"
+          },
+          "skipCurate": {
+            "title": "CurationPreference.skipCurate",
+            "description": "Skip all curation steps",
+            "type": "boolean"
+          },
+          "skipSlicing": {
+            "title": "CurationPreference.skipSlicing",
+            "description": "Skip slicing, use raw arch",
+            "type": "boolean"
+          },
+          "skipCuration": {
+            "title": "CurationPreference.skipCuration",
+            "type": "boolean"
+          },
+          "genre": {
+            "title": "CurationPreference.genre",
+            "description": "Genre of the video",
+            "type": "string"
+          },
+          "failAfter": {
+            "title": "CurationPreference.failAfter",
+            "type": "boolean"
+          },
+          "skipCache": {
+            "title": "CurationPreference.skipCache",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "clipDurations",
+          "topicKeywords"
+        ],
+        "additionalProperties": false,
+        "title": "CurationPreference",
+        "type": "object"
+      },
+      "WatermarkType": {
+        "title": "WatermarkType",
+        "enum": [
+          "competition"
+        ],
+        "type": "string"
+      },
+      "GCSObjectMeta": {
+        "properties": {
+          "name": {
+            "title": "GCSObjectMeta.name",
+            "type": "string"
+          },
+          "bucket": {
+            "title": "GCSObjectMeta.bucket",
+            "type": "string"
+          },
+          "displayName": {
+            "title": "GCSObjectMeta.displayName",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "bucket",
+          "displayName"
+        ],
+        "additionalProperties": false,
+        "title": "GCSObjectMeta",
+        "type": "object"
+      },
+      "CanvasStyle": {
+        "properties": {
+          "top": {
+            "title": "CanvasStyle.top",
+            "type": "number"
+          },
+          "left": {
+            "title": "CanvasStyle.left",
+            "type": "number"
+          },
+          "width": {
+            "title": "CanvasStyle.width",
+            "type": "number"
+          },
+          "height": {
+            "title": "CanvasStyle.height",
+            "type": "number"
+          },
+          "scaleX": {
+            "title": "CanvasStyle.scaleX",
+            "type": "number"
+          },
+          "scaleY": {
+            "title": "CanvasStyle.scaleY",
+            "type": "number"
+          }
+        },
+        "required": [
+          "top",
+          "left",
+          "width",
+          "height",
+          "scaleX",
+          "scaleY"
+        ],
+        "additionalProperties": false,
+        "title": "CanvasStyle",
+        "type": "object"
+      },
+      "LayoutAspectRatioType": {
+        "enum": [
+          "portrait",
+          "square",
+          "landscape"
+        ],
+        "title": "LayoutAspectRatioType",
+        "description": "layoutAspectRatio\n- portrait: 9:16 [default]\n- square: 1:1\n- landscape: 16:9",
+        "type": "string"
+      },
+      "OverlayFrameBasePosition": {
+        "properties": {
+          "coveredLayers": {
+            "items": {
+              "$ref": "#/components/schemas/CoveredLayers",
+              "title": "OverlayFrameBase.position.coveredLayers.[]"
+            },
+            "title": "OverlayFrameBase.position.coveredLayers",
+            "description": "when overlaped with other layers, don't render it",
+            "type": "array"
+          },
+          "tPct": {
+            "title": "OverlayFrameBase.position.tPct",
+            "description": "top percentage, if undefined, calculate from bottom\\\nlike the `n` in css definition `top: n%`;",
+            "type": "number"
+          },
+          "bPct": {
+            "title": "OverlayFrameBase.position.bPct",
+            "description": "bottom percentage, if undefined, calculate from top\\\nlike the `n` in css definition `bottom: n%`;",
+            "type": "number"
+          },
+          "lPct": {
+            "title": "OverlayFrameBase.position.lPct",
+            "type": "number"
+          },
+          "rPct": {
+            "title": "OverlayFrameBase.position.rPct",
+            "type": "number"
+          },
+          "vAlign": {
+            "title": "OverlayFrameBase.position.vAlign",
+            "description": "vertical alignment",
+            "enum": [
+              "center"
+            ],
+            "type": "string"
+          },
+          "hAlign": {
+            "title": "OverlayFrameBase.position.hAlign",
+            "description": "horizontal alignment",
+            "enum": [
+              "center"
+            ],
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "title": "OverlayFrameBase.position",
+        "description": "priority: assume that 3 of these will only has one\n1. vAlign\n2. bPct\n3. tPct",
+        "type": "object"
+      },
+      "CoveredLayer": {
+        "title": "CoveredLayer",
+        "enum": [
+          "VHOOK"
+        ],
+        "type": "string"
+      },
+      "CoveredLayers": {
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/CoveredLayer",
+            "title": "CoveredLayers.name"
+          },
+          "coveredLayerSource": {
+            "title": "CoveredLayers.coveredLayerSource"
+          }
+        },
+        "required": [
+          "name",
+          "coveredLayerSource"
+        ],
+        "additionalProperties": false,
+        "title": "CoveredLayers",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
