@@ -21,7 +21,7 @@
   "paths": {
     "/api/ExportableClip": {
       "get": {
-        "description": "Returns all clips  from project",
+        "description": "Query all exportable clips for the target project.",
         "parameters": [
           {
             "name": "projectId",
@@ -62,7 +62,7 @@
     },
     "/api/ClipProject": {
       "post": {
-        "description": "Create a new project",
+        "description": "Create a new project.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -99,7 +99,7 @@
     },
     "/api/ClipProject/{projectId}": {
       "get": {
-        "description": "query a project",
+        "description": "Get the project by project id.",
         "parameters": [
           {
             "name": "projectId",

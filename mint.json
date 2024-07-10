@@ -31,8 +31,9 @@
   },
   "tabs": [
     {
-      "name": "API Reference",
-      "url": "api-reference"
+      "name": "API Reference V1",
+      "url": "v1/api-reference",
+      "version": "v1"
     }
   ],
   "navigation": [
@@ -45,15 +46,18 @@
     {
       "group": "Project",
       "pages": [
-        "api-reference/project/create",
-        "api-reference/project/get"
-      ]
+        "v1/api-reference/project/create",
+        "v1/api-reference/project/get"
+      ],
+      "version": "v1"
     },
     {
-      "group": "Clip",
+      "group": "Exportable Clip",
       "pages": [
-        "api-reference/clip/get"
-      ]
+        "v1/api-reference/exportable-clip/get"
+      ],
+      "version": "v1"
     }
-  ]
+  ],
+  "versions": ["v1", "v2"]
 }
